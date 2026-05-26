@@ -20,6 +20,12 @@ fn main( ){
         let cmd = parts.next().unwrap_or("");
         let args: Vec<&str> = parts.collect();
 
+        if cmd == "cd" {
+            let dir = args.get(0).unwrap_or(&"");
+            std::env::set_current_dir(dir).unwrap();
+            continue
+        }
+
         Command::new(cmd)
         .args(args)
         .spawn()
