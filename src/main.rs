@@ -37,7 +37,22 @@ fn main() {
         if let Some(pos) = args.iter().position(|&a| a == "|"){
             let left_args: Vec<&str>  =  args[..pos].to_vec();
             let right_cmd = args[pos + 1];
-            let right_args: Vec<&str> = args
+            let right_args: Vec<&str> = args[pos + 2..].to_vec();
+
+            let left = Command::new(cmd)
+                .args(left_args)
+                .stdout(std::process::Stdio::piped())
+                .spawn()
+                .unwrap();
+
+            Command::new(right_cmd)
+                 .args(right_args)
+                 .stdin(left.stdout.unwrap())
+                 .spawn()
+                 .unwrap()
+                 .wait()
+                 .unwrap();
+            continue;
         }
 
 
